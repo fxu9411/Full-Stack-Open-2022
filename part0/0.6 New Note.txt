@@ -1,0 +1,11 @@
+note over browser:
+Update DOM with new note content
+end note
+
+note over browser:
+Convert content to JSON format
+end note
+
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: HTTP Status 201 with content-length and content-type: application/json
