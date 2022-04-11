@@ -262,3 +262,180 @@ const App = () => {
   return <div>{counter}</div>;
 };
 ```
+
+- The function body that defines the component begins with the function call `useState(0)`
+- It will add `state` to the component and renders it initialized with the value of zero
+- `[counter, setCounter]` is the destructuring assignment syntax
+- Refresh every 1000 ms and calls `setCounter` which will increse counter by 1
+
+### Event Handling
+
+```js
+const App = () => {
+  const [counter, setCounter] = useState(0);
+
+  const handleClick = () => {
+    console.log("clicked");
+  };
+
+  return (
+    <div>
+      <div>{counter}</div>
+      <button onClick={handleClick}>plus</button>
+    </div>
+  );
+};
+```
+
+- or we can change it to
+  ```js
+  <button onClick={() => setCounter(counter + 1)}>plus</button>
+  ```
+
+### Event Handler is a function
+
+- If we try to define the event handler like the following, it would break the app
+
+  ```js
+  <button onClick={setCounter(counter + 1)}>plus</button>
+  ```
+
+- An event handler is supposed to be either a function or a function reference
+- With `{setCounter(counter + 1)}`, the event handler is actually a function call.
+- Reason: When React renders the component for the first time, it executes the function call `setCounter(0+1)`, and changes the value of the component's state to 1. It will cause the component to be re-rendered -> Execute the setCounter again -> Infinite Loop
+
+### Passing state to child components
+
+```js
+const App = () => {
+  const [counter, setCounter] = useState(0);
+
+  const increaseByOne = () => setCounter(counter + 1);
+  const decreaseByOne = () => setCounter(counter - 1);
+  const setToZero = () => setCounter(0);
+
+  return (
+    <div>
+      <Display counter={counter} />
+      <Button onClick={increaseByOne} text='plus' />
+      <Button onClick={setToZero} text='zero' />
+      <Button onClick={decreaseByOne} text='minus' />
+    </div>
+  );
+};
+```
+
+- The event handler is passed to the `Button` component through the `onClick` prop.
+
+### Changes in state cause re-rendering
+
+1. When the application starts, the code in App is executed. This code uses a useState hook to create the application state, setting an initial value of the variable counter. This component contains the Display component - which displays the counter's value, 0 - and three Button components. The buttons all have event handlers, which are used to change the state of the counter.
+2. When one of the buttons is clicked, the event handler is executed. The event handler changes the state of the App component with the setCounter function. **Calling a function which changes the state causes the component to rerender.**
+3. So, if a user clicks the plus button, the button's event handler changes the value of counter to 1, and the App component is rerendered. This causes its subcomponents Display and Button to also be re-rendered. Display receives the new value of the counter, 1, as props. The Button components receive event handlers which can be used to change the state of the counter.
+
+### Refactoring the components
+
+- From
+  ```js
+  const Display = (props) => {
+    return <div>{props.counter}</div>;
+  };
+  ```
+  To
+  ```js
+  const Display = ({ counter }) => {
+    return <div>{counter}</div>;
+  };
+  ```
+- From
+  ```js
+  const Button = (props) => {
+    return <button onClick={props.onClick}>{props.text}</button>;
+  };
+  ```
+  To
+  ```js
+  const Button = ({ onClick, text }) => (
+    <button onClick={onClick}>{text}</button>
+  );
+  ```
+
+## d. A more complex state, debugging React apps
+
+---
+
+### A note on React version
+
+### Complex State
+
+- If we have two states: `left` and `right`
+
+  ```js
+  const [left, setLeft]...
+  const [right, setRight]...
+  ```
+
+  then we can simplify it to
+
+  ```js
+  const [clicks, setClicks] = useState({
+    left: 0,
+    right: 0,
+  });
+  const handleLeftClick = () => {
+    const newClicks = {
+      left: clicks.left + 1,
+      right: clicks.right,
+    };
+    setClicks(newClicks);
+  };
+
+  const handleRightClick = () => {
+    const newClicks = {
+      left: clicks.left,
+      right: clicks.right + 1,
+    };
+    setClicks(newClicks);
+  };
+  ```
+
+  Then we can simplify it to
+
+  ```js
+  const handleLeftClick = () => {
+    const newClicks = {
+      ...clicks,
+      left: clicks.left + 1,
+    };
+    setClicks(newClicks);
+  };
+
+  const handleRightClick = () => {
+    const newClicks = {
+      ...clicks,
+      right: clicks.right + 1,
+    };
+    setClicks(newClicks);
+  };
+  ```
+
+- `{...clicks}` creates a new object that has copies of all of the properties of the `clicks` object
+- Final version:
+
+  ```js
+  const handleLeftClick = () => setClicks({ ...clicks, left: clicks.left + 1 });
+
+  const handleRightClick = () =>
+    setClicks({ ...clicks, right: clicks.right + 1 });
+  ```
+
+- but this one will not work:
+  ```js
+  const handleLeftClick = () => {
+    clicks.left++;
+    setClicks(clicks);
+  };
+  ```
+  because **mutate the statement directly is forbidden**
+
+### Handling arrays
