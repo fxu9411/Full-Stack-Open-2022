@@ -439,3 +439,64 @@ const App = () => {
   because **mutate the statement directly is forbidden**
 
 ### Handling arrays
+- Add `allClicks` to remember every click that has occurred in the application
+  ```js
+  const [allClicks, setAll] = useState([])
+  ```
+- Use `concat` method instead of `push` to avoid mutating the state
+
+### Conditional Rendering
+  ```js
+  const History = (props) => {
+  if (props.allClicks.length === 0) {
+  ```
+
+### Rules of Hooks
+- `useState` must not be in the loop, a conditional expression or any place that is not a function defining a component
+
+### Event Handling Revisited
+- Example: we have a button   
+  `<button>reset to zero</button>`  
+  In order to make the button work, we need to add an event handler
+- Event handler must always be a function of a reference to a function
+- `<button onClick={value = 0}>button</button>`  
+  The event handler is not a function but a variable assignment 
+  And we must never mutate state directly in React
+- `<button onClick={console.log('clicked the button')}>button</button>`  
+  This will not work because  
+  **The Event Handler is defined as a function call wihich means that the event handler is actually assigned the returned value from function**
+- Change it to
+  ```js
+  <button onClick={() => console.log('clicked the button')}>
+  button</button>
+  <button onClick={() => setValue(0)}>button</button>
+  ```
+- The `handleClick` variable is now assigned to a reference to the function. The reference is passed to the button as the `onClick` attribute
+
+### Function that returns a function
+- ```js
+  const hello = () => {
+    const handler = () => console.log('hello world')
+    return handler
+  }
+  ```
+- Another example:
+  ```js
+  const setToValue = (newValue) => () => {
+      console.log('value now', newValue)  // print the new value to console
+      setValue(newValue)
+    }
+    return (
+      <div>
+        {value}
+        <button onClick={setToValue(1000)}>thousand</button>
+        <button onClick={setToValue(0)}>reset</button>
+        <button onClick={setToValue(value + 1)}>increment</button>
+      </div>
+    )
+  ```
+
+### Passing Event Handlers to Child Components
+![](Images/2022-04-27-12-21-12.png)
+
+### Do not Define Components Within Components
