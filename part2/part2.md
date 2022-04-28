@@ -50,3 +50,6 @@ const App = ({ notes }) => {
 }
 ```
 - The `key` attribute must now be defined for the `Note` component and not for the `li` tags like before
+
+---
+## b. Forms
