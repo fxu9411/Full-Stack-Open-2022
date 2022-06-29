@@ -468,7 +468,6 @@ const App = () => {
 - Change it to
   ```js
   <button onClick={() => console.log('clicked the button')}>
-  button</button>
   <button onClick={() => setValue(0)}>button</button>
   ```
 - The `handleClick` variable is now assigned to a reference to the function. The reference is passed to the button as the `onClick` attribute
