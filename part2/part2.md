@@ -53,3 +53,60 @@ const App = ({ notes }) => {
 
 ---
 ## b. Forms
+- Added form to the note webpage for adding new note
+```js
+const [notes, setNotes] = useState(props.notes)
+
+  const addNote = (event) => {
+    event.preventDefault()
+    console.log('button clicked', event.target)
+  }
+<form onSubmit={addNote}>
+  <input />
+  <button type="submit">save</button>
+</form> 
+```
+- To access the data contained in the form's input element
+
+### Controlled Component
+```js
+const [newNote, setNewNote] = useState(
+    'a new note...'
+  ) 
+const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+```
+```html
+<form onSubmit={addNote}>
+        <input
+          value={newNote}
+          onChange={handleNoteChange}
+        />
+        <button type="submit">save</button>
+</form>
+```
+- The `target` property of the event object now corresponds to the controlled input element, and `event.target.value` refers to the input value of that element.
+
+### Filtering Displayed Elements
+```js
+const [showAll, setShowAll] = useState(true)
+const notesToShow = showAll
+    ? notes
+    : notes.filter(note => note.important === true)
+```
+```html
+<div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all' }
+        </button>
+</div>
+<ul>
+        {notesToShow.map(note =>
+          <Note key={note.id} note={note} />
+        )}
+</ul>
+```
+
+## c. Getting data from server
