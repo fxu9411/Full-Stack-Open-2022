@@ -4,7 +4,7 @@ const Persons = ({ personsFiltered, deletePerson }) => {
             {personsFiltered.map(person =>
                 <li>
                     {person.name}: {person.number}
-                    <button onClick={() => deletePerson(person)}>x</button>
+                    <button onClick={() => deletePerson(person.id)}>x</button>
                 </li>
             )}
         </ul>

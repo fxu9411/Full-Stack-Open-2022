@@ -88,18 +88,16 @@ const App = () => {
     setNameFilter(event.target.value)
   }
 
-  const deletePerson = (person) => {
-    if (window.confirm(`Delete ${person.name}?`)) {
+  const deletePerson = (id) => {
+    const toDelete = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${toDelete.name}?`)) {
       personsService
-        .deletePerson(person.id)
-        .then(
-          returnedPersons => {
-            setPersons(returnedPersons)
-          }
-        )
+        .deletePerson(id)
+        .then(setPersons(persons.filter(p => p.id !== id)))
+        .then(setErrorMessage(`Deleted ${toDelete.name}`))
         .catch(error => {
           setErrorMessage(
-            `Information of ${person.name} was already removed from server.`
+            `Information of ${toDelete.name} was already removed from server.`
           )
           setTimeout(() => {
             setErrorMessage(null)
