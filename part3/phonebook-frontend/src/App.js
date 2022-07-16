@@ -51,14 +51,15 @@ const App = () => {
       const message = 'Cannot insert empty name.'
       alert(message)
     } else {
+      console.log("Double!")
       const personObject = {
         name: newName,
         number: newNumber
       }
       personsService
         .create(personObject)
-        .then(returnedPersons => {
-          setPersons(persons.concat(returnedPersons))
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
         })
         .then(
           setErrorMessage(`Added ${personObject.name}`)
