@@ -1,37 +1,15 @@
 require('dotenv').config()
 const express = require('express')
+const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/person')
-const app = express()
+
 
 app.use(cors())
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(express.static('build'))
-
-let persons = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": 2,
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": 4,
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
 
 app.get('/api/persons', (request, response) => {
     // response.json(persons)
@@ -42,13 +20,6 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    // const id = Number(request.params.id)
-    // const returnedPerson = persons.filter(person => person.id === id)
-    // if (returnedPerson) {
-    //     response.json(returnedPerson)
-    // } else {
-    //     response.status(404).end()
-    // }
     Person.findById(request.params.id).then(person => {
         response.json(person)
     })
@@ -65,19 +36,20 @@ app.get('/info', (request, response) => {
     response.send(body)
 })
 
-// const generateID = () => {
-//     // const maxID = persons.length > 0 ? Math.max(...persons.map(n => n.id)) : 0
-//     const maxID = Math.floor(Math.random() * 10000000)
-//     return maxID + 1
-// }
-
 app.post('/api/persons', (request, response) => {
-    console.log("Im here")
+    // console.log("Im here")
     const body = request.body
 
-    console.log(body)
+    const persons = []
 
-    if (!body.name || !body.number || body.content === undefined) {
+    Person.find({}).then(person => {
+        persons.concat(person)
+    })
+
+    // console.log(persons)
+    // console.log(body)
+
+    if (!body.name || !body.number) {
         return response.status(400).json({
             error: 'Content Missing'
         })
@@ -96,13 +68,10 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
-
-    // persons = persons.concat(person)
-    // console.log(person)
-    // response.json(person)
 })
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3005
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
