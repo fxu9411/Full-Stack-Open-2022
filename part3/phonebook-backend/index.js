@@ -1,8 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const Person = require('./models/person')
 const app = express()
-
 
 app.use(cors())
 app.use(express.json())
@@ -33,17 +34,24 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-    response.json(persons)
+    // response.json(persons)
+    console.log("Getting Persons")
+    Person.find({}).then(person => {
+        response.json(person)
+    })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const returnedPerson = persons.filter(person => person.id === id)
-    if (returnedPerson) {
-        response.json(returnedPerson)
-    } else {
-        response.status(404).end()
-    }
+    // const id = Number(request.params.id)
+    // const returnedPerson = persons.filter(person => person.id === id)
+    // if (returnedPerson) {
+    //     response.json(returnedPerson)
+    // } else {
+    //     response.status(404).end()
+    // }
+    Person.findById(request.params.id).then(person => {
+        response.json(person)
+    })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -57,15 +65,19 @@ app.get('/info', (request, response) => {
     response.send(body)
 })
 
-const generateID = () => {
-    // const maxID = persons.length > 0 ? Math.max(...persons.map(n => n.id)) : 0
-    const maxID = Math.floor(Math.random() * 10000000)
-    return maxID + 1
-}
+// const generateID = () => {
+//     // const maxID = persons.length > 0 ? Math.max(...persons.map(n => n.id)) : 0
+//     const maxID = Math.floor(Math.random() * 10000000)
+//     return maxID + 1
+// }
 
 app.post('/api/persons', (request, response) => {
+    console.log("Im here")
     const body = request.body
-    if (!body.name || !body.number) {
+
+    console.log(body)
+
+    if (!body.name || !body.number || body.content === undefined) {
         return response.status(400).json({
             error: 'Content Missing'
         })
@@ -75,18 +87,22 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const person = {
-        id: generateID(),
+    const person = new Person({
+        // id: generateID(),
         name: body.name,
         number: body.number,
-    }
+    })
 
-    persons = persons.concat(person)
-    console.log(person)
-    response.json(person)
+    person.save().then(savedPerson => {
+        response.json(savedPerson)
+    })
+
+    // persons = persons.concat(person)
+    // console.log(person)
+    // response.json(person)
 })
 
-const PORT = process.env.PORT || 3005
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })

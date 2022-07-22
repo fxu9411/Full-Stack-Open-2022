@@ -51,7 +51,6 @@ const App = () => {
       const message = 'Cannot insert empty name.'
       alert(message)
     } else {
-      console.log("Double!")
       const personObject = {
         name: newName,
         number: newNumber

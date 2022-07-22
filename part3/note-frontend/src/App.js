@@ -25,7 +25,7 @@ const App = () => {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() > 0.5,
-      id: notes.length + 1,
+      // id: notes.length + 1,
     }
 
     noteService
@@ -43,7 +43,7 @@ const App = () => {
   const toggleImportanceOf = id => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
-  
+
     noteService
       .update(id, changedNote)
       .then(returnedNote => {
@@ -70,11 +70,11 @@ const App = () => {
       <Notification message={errorMessage} />
       <div>
         <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? 'important' : 'all' }
+          show {showAll ? 'important' : 'all'}
         </button>
-      </div>   
+      </div>
       <ul>
-        {notesToShow.map(note => 
+        {notesToShow.map(note =>
           <Note
             key={note.id}
             note={note}
