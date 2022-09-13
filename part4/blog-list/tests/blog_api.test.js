@@ -59,6 +59,27 @@ test('POST: Empty Title and URL', async () => {
     await api.post('/api/blogs').send(blog).expect(400)
 }, 10000)
 
+describe('DELETE: deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const blogsAtStart = await helper.blogInDb()
+        const blogToDelete = blogsAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${blogToDelete.id}`)
+            .expect(204)
+
+        const blogsAtEnd = await helper.blogInDb()
+
+        expect(blogsAtEnd).toHaveLength(
+            helper.initialBlogs.length - 1
+        )
+
+        const titles = blogsAtEnd.map(r => r.title)
+
+        expect(titles).not.toContain(blogToDelete.title)
+    })
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
