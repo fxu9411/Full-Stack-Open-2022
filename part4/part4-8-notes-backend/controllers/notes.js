@@ -2,16 +2,19 @@ const notesRouter = require('express').Router()
 const Note = require('../models/note')
 const User = require('../models/user')
 
-notesRouter.get('/', (request, response) => {
-  Note.find({}).then(notes => {
-    response.json(notes)
-  })
+notesRouter.get('/', async (request, response) => {
+  const notes = await Note
+    .find({})
+    .populate('user', { username: 1, name: 1 })
+
+  response.json(notes)
 })
 
 notesRouter.get('/:id', async (request, response) => {
   const note = await Note.findById(request.params.id)
+
   if (note) {
-    response.json(note)
+    response.json(note.toJSON())
   } else {
     response.status(404).end()
   }
@@ -19,7 +22,6 @@ notesRouter.get('/:id', async (request, response) => {
 
 notesRouter.post('/', async (request, response) => {
   const body = request.body
-
   const user = await User.findById(body.userId)
 
   const note = new Note({
@@ -35,7 +37,6 @@ notesRouter.post('/', async (request, response) => {
 
   response.status(201).json(savedNote)
 })
-
 
 notesRouter.delete('/:id', async (request, response) => {
   await Note.findByIdAndRemove(request.params.id)
