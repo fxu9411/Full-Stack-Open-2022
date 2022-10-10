@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJuYW1lIjoiVGVzdCBVc2VyIiwiaWQiOiI2MzQzNDVkOTA0MWJjNGZhYmEzOGZhNDQiLCJpYXQiOjE2NjU0MzQ4ODF9.cnFensZsQ9BElnPCq5jfq0_geeMDq2jiJYR-c9BY1aQ
+
+{
+    "title": "Test15",
+    "author": "XWX",
+    "url": "google.com",
+    "likes": 300
+}
