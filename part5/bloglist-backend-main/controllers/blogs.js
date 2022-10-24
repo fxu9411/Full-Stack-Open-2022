@@ -40,7 +40,8 @@ blogsRouter.post("/", tokenExtractor, userExtractor, async (request, response) =
 blogsRouter.delete('/:id', tokenExtractor, userExtractor, async (request, response) => {
   const user = request.user
   const blog = await Blog.findById(request.params.id)
-  if (blog.user._id.toString() === user._id.toString()) {
+  console.log(blog)
+  if (user.username === 'admin' || blog.user._id.toString() === user._id.toString()) {
     await Blog.findByIdAndRemove(request.params.id)
     response.status(204).end()
   } else {
@@ -50,6 +51,7 @@ blogsRouter.delete('/:id', tokenExtractor, userExtractor, async (request, respon
 
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body
+  console.log(body)
 
   const blog = new Blog({
     title: body.title,
@@ -58,7 +60,7 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes || 0
   })
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, { likes: body.likes })
   response.json(updatedBlog)
 })
 
