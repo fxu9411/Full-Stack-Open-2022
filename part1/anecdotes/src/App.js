@@ -1,4 +1,4 @@
-import { useState } from 'react'
+seimport { useState } from 'react'
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
