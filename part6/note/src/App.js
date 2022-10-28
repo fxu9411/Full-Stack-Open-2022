@@ -1,15 +1,11 @@
-import { createStore } from 'redux'
-import noteReducer from './reducers/noteReducer'
-
-const store = createStore(noteReducer)
+import Notes from './Notes'
+import NewNote from './NewNote'
 
 const App = () => {
   return (
     <div>
-      <ul>
-        {store.getState().map(note =>
-          <li key={note.id}>{note.content} <strong>{note.important ? 'Important' : ''}</strong></li>)}
-      </ul>
+      <NewNote />
+      <Notes />
     </div>
   )
 }
